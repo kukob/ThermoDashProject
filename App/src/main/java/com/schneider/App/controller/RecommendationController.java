@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.schneider.App.service.RecommendationService;
 import org.springframework.http.ResponseEntity;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -27,12 +28,6 @@ public class RecommendationController {
     private final RecommendationService recommendationService;
     private final UserRepository userRepository;
 
-//    @GetMapping
-//    public ResponseEntity<String> getRecommendation(@RequestParam Integer userId) {
-//        String message = recommendationService.getRecommendation(userId);
-//        return ResponseEntity.ok(message);
-//    }
-
     @GetMapping
     public ResponseEntity<String> getRecommendation(@AuthenticationPrincipal UserDetails user) {
         UserEntity entity = userRepository.findByUsername(user.getUsername());
@@ -41,23 +36,14 @@ public class RecommendationController {
         return ResponseEntity.ok(message);
     }
 
-//    @GetMapping("/hourly")
-//    public ResponseEntity<?> getHourlyRecommendations() {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        String username = auth.getName();
-//        System.out.println("Prijavljen korisnik (username): " + username);
-//
-//        UserEntity user = userRepository.findByUsername(username);
-//        if (user == null) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Korisnik nije pronađen");
-//        }
-//
-//        if (user.getCity() == null) {
-//            return ResponseEntity.badRequest().body("Korisnik nema podešen grad");
-//        }
-//
-//        List<HourlyRecommendationDto> list = recommendationService.getHourlyRecommendations(user.getCity());
-//        return ResponseEntity.ok(list);
-//    }
+    @GetMapping("/hourly")
+    public ResponseEntity<?> getHourlyRecommendations(Principal principal) {
+        try {
+            List<HourlyRecommendationDto> result = recommendationService.getHourlyRecommendations(principal);
+            return ResponseEntity.ok(result);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 }

@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.schneider.App.model.UserEntity;
+
+import java.security.Principal;
 import java.time.LocalTime;
 
 import java.util.ArrayList;
@@ -49,43 +51,49 @@ public class RecommendationService {
         } else if (temp <= 18) {
             return "Preporuka: Ukljucite grejanje.";
         } else {
-            return "Preporuka: Nema potrebe za ukljucivanjem klime/grejanja.";
+            return "Ugasite klimu/grejanje";
         }
     }
 
-//    public List<HourlyRecommendationDto> getHourlyRecommendations(String city) {
-//        List<HourlyRecommendationDto> result = new ArrayList<>();
-//
-////        String url = "https://api.openweathermap.org/data/2.5/forecast?q=" + city +
-////                "&appid=" + apiKey +
-////                "&units=metric";
-//
-//        JsonNode response = restTemplate.getForObject(apiUrl, JsonNode.class);
-//        JsonNode list = response.get("list");
-//
-//        for (JsonNode item : list) {
-//            String time = item.get("dt_txt").asText();
-//            double temp = item.get("main").get("temp").asDouble();
-//
-//            String timeRange = time.substring(11, 16) + " – " + addHoursToTime(time.substring(11, 16), 3);
-//            String recommendation;
-//
-//            if (temp > 26) {
-//                recommendation = "Uključi klimu ";
-//            } else if (temp < 18) {
-//                recommendation = "Uključi grejanje";
-//            } else {
-//                recommendation = "Nije potrebna potrošnja ";
-//            }
-//
-//            result.add(new HourlyRecommendationDto(timeRange, recommendation));
-//        }
-//
-//        return result;
-//    }
-//
-//    private String addHoursToTime(String time, int hoursToAdd) {
-//        LocalTime t = LocalTime.parse(time);
-//        return t.plusHours(hoursToAdd).toString();
-//    }
+public List<HourlyRecommendationDto> getHourlyRecommendations(Principal principal) {
+    UserEntity user = userRepository.findByUsername(principal.getName());
+    System.out.println("Principal name: " + principal.getName());
+
+    String city = user.getCity();
+    if (city == null || city.isBlank()) {
+        throw new RuntimeException("Korisnik nema podesen grad.");
+    }
+
+    String url = apiUrl + "?q=" + city + "&appid=" + apiKey + "&units=metric";
+    JsonNode response = restTemplate.getForObject(url, JsonNode.class);
+    JsonNode list = response.get("list");
+
+    List<HourlyRecommendationDto> result = new ArrayList<>();
+    for (JsonNode item : list) {
+        String time = item.get("dt_txt").asText();
+        double temp = item.get("main").get("temp").asDouble();
+
+        String startTime = time.substring(11, 16);
+        String endTime = addHoursToTime(startTime, 3);
+        String recommendation;
+
+        if (temp >= 26) {
+            recommendation = "Ukljuci klimu";
+        } else if (temp <= 18) {
+            recommendation = "Ukljuci grejanje";
+        } else {
+            recommendation = "Nije potrebna potrosnja";
+        }
+
+        result.add(new HourlyRecommendationDto(startTime + " – " + endTime, recommendation));
+    }
+
+    return result;
+}
+
+    private String addHoursToTime(String time, int hoursToAdd) {
+        LocalTime t = LocalTime.parse(time);
+        return t.plusHours(hoursToAdd).toString();
+    }
+
 }
