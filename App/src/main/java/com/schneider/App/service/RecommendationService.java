@@ -71,11 +71,11 @@ public class RecommendationService {
 //            String recommendation;
 //
 //            if (temp > 26) {
-//                recommendation = "Uključi klimu ❄️";
+//                recommendation = "Uključi klimu ";
 //            } else if (temp < 18) {
-//                recommendation = "Uključi grejanje 🔥";
+//                recommendation = "Uključi grejanje";
 //            } else {
-//                recommendation = "Nije potrebna potrošnja 🌤️";
+//                recommendation = "Nije potrebna potrošnja ";
 //            }
 //
 //            result.add(new HourlyRecommendationDto(timeRange, recommendation));

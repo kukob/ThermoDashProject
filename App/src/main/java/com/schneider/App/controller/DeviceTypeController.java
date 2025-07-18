@@ -2,6 +2,7 @@ package com.schneider.App.controller;
 
 
 import com.schneider.App.model.DeviceType;
+import com.schneider.App.service.DeviceTypeService;
 import com.schneider.App.repository.DeviceTypeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,10 @@ import java.util.List;
 @RequestMapping("/api/devices")
 public class DeviceTypeController {
 
-    private final DeviceTypeRepository deviceTypeRepository;
+    private final DeviceTypeService deviceTypeService;
 
     @GetMapping
     public ResponseEntity<List<DeviceType>> getAllDeviceTypes() {
-        return ResponseEntity.ok(deviceTypeRepository.findAll());
+        return ResponseEntity.ok(deviceTypeService.getAllDeviceTypes());
     }
 }

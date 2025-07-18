@@ -20,7 +20,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody @Valid UserDto request) {
@@ -31,11 +30,6 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
-
-//    @GetMapping("/me")
-//    public UserEntity getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
-//        return userRepository.findByUsername(userDetails.getUsername());
-//    }
 
     @GetMapping("/login")
     public String loginPage() {

@@ -25,16 +25,6 @@ public class UsageDataController {
     private final UsageDataService usageDataService;
     private final UserRepository userRepository;
 
-//    @PostMapping
-//    public ResponseEntity<?> addUsage(@RequestBody UsageDataDto request) {
-//        try {
-//            UsageDatum saved = usageDataService.saveUsageData(request);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
-//        } catch (RuntimeException e) {
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
-
     @PostMapping
     public ResponseEntity<?> addUsage(@RequestBody UsageDataDto request, Principal principal) {
         try {
@@ -57,4 +47,6 @@ public class UsageDataController {
         List<DeviceConsumptionDto> result = usageDataService.getDeviceConsumptionForUser(user.getId());
         return ResponseEntity.ok(result);
     }
+
+
 }

@@ -22,9 +22,6 @@ public class UsageDataService {
     private final DeviceTypeRepository deviceTypeRepository;
 
     public UsageDatum saveUsageData(UsageDataDto request, String username) {
-    //public UsageDatum saveUsageData(UsageDataDto request) {
-        //UserEntity userEntity = userRepository.findById(request.getUserId())
-        //.orElseThrow(() -> new RuntimeException("Korisnik ne postoji"));
         UserEntity userEntity = userRepository.findByUsername(username);
 
         DeviceType device = deviceTypeRepository.findById(request.getDeviceTypeId())
