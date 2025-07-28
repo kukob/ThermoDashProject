@@ -72,7 +72,7 @@ public List<HourlyRecommendationDto> getHourlyRecommendations(Principal principa
     for (JsonNode item : list) {
         String time = item.get("dt_txt").asText();
         double temp = item.get("main").get("temp").asDouble();
-
+        String date = time.substring(0, 10);
         String startTime = time.substring(11, 16);
         String endTime = addHoursToTime(startTime, 3);
         String recommendation;
@@ -85,7 +85,7 @@ public List<HourlyRecommendationDto> getHourlyRecommendations(Principal principa
             recommendation = "Nije potrebna potrosnja";
         }
 
-        result.add(new HourlyRecommendationDto(startTime + " – " + endTime, recommendation));
+        result.add(new HourlyRecommendationDto(date, startTime + " – " + endTime, recommendation));
     }
 
     return result;
@@ -97,3 +97,19 @@ public List<HourlyRecommendationDto> getHourlyRecommendations(Principal principa
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

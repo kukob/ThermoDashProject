@@ -6,6 +6,7 @@ import com.schneider.App.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface UsageDatumRepository extends JpaRepository<UsageDatum, Integer> {
@@ -18,5 +19,6 @@ public interface UsageDatumRepository extends JpaRepository<UsageDatum, Integer>
             "GROUP BY d.name")
     List<DeviceConsumptionDto> findTotalConsumptionPerDeviceTypeByUserId(Integer userId);
 
+    List<UsageDatum> findAllByUserEntityAndDateBetween(UserEntity user, LocalDate startDate, LocalDate endDate);
 
 }

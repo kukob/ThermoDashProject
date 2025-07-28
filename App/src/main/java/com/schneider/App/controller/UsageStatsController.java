@@ -2,6 +2,7 @@ package com.schneider.App.controller;
 
 
 import com.schneider.App.dto.DeviceConsumptionDto;
+import com.schneider.App.dto.MonthlyConsumptionDto;
 import com.schneider.App.model.UserEntity;
 import com.schneider.App.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,17 @@ public class UsageStatsController {
         return ResponseEntity.ok(usageStatsService.getDailyConsumption(principal.getName()));
     }
 
+//    @GetMapping("/monthly")
+//    public ResponseEntity<Map<String, Integer>> getMonthlyStats(Principal principal) {
+//        Map<String, Integer> monthlyStats = usageStatsService.getMonthlyConsumption(principal.getName());
+//        return ResponseEntity.ok(monthlyStats);
+//    }
+
+//    @GetMapping("/monthly")
+//    public ResponseEntity<List<MonthlyConsumptionDto>> getMonthlyStats(Principal principal) {
+//        List<MonthlyConsumptionDto> monthlyStats = usageStatsService.getMonthlyConsumption(principal.getName());
+//        return ResponseEntity.ok(monthlyStats);
+//    }
 
 //    @GetMapping("/daily-device")
 //    public ResponseEntity<List<Map<String, Object>>> getDailyDeviceStats(Principal principal) {

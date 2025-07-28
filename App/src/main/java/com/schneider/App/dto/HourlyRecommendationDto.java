@@ -13,4 +13,5 @@ public class HourlyRecommendationDto {
 
     private String timeRange;
     private String recommendation;
+    private String date;
 }
