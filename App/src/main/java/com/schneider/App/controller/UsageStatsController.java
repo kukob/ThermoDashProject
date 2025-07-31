@@ -38,6 +38,18 @@ public class UsageStatsController {
         return ResponseEntity.ok(usageStatsService.getDailyConsumption(principal.getName()));
     }
 
+    @GetMapping("/api/consumption/all")
+    public ResponseEntity<List<DailyConsumptionDto>> getAllUsersDailyConsumption() {
+        return ResponseEntity.ok(usageStatsService.getAllUsersDailyConsumption());
+    }
+
+    @GetMapping("/average")
+    public ResponseEntity<Map<String, Integer>> getAverageStatsForAllUsers() {
+        Map<String, Integer> averages = usageStatsService.getAverageStatsForAllUsers();
+        return ResponseEntity.ok(averages);
+    }
+
+
 //    @GetMapping("/monthly")
 //    public ResponseEntity<Map<String, Integer>> getMonthlyStats(Principal principal) {
 //        Map<String, Integer> monthlyStats = usageStatsService.getMonthlyConsumption(principal.getName());

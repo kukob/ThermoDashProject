@@ -46,4 +46,7 @@ public class UserEntity {
                 .collect(Collectors.toSet());
     }
 
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SolarPanel> solarPanels = new ArrayList<>();
+
 }

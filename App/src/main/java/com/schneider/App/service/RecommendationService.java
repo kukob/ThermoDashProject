@@ -1,6 +1,7 @@
 package com.schneider.App.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.schneider.App.dto.HourlyRecommendationDto;
 import com.schneider.App.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,9 +48,9 @@ public class RecommendationService {
 
     private String generateMessage(double temp) {
         if (temp >= 26) {
-            return "Preporuka: Ukljucite klimu.";
+            return "Ukljucite klimu.";
         } else if (temp <= 18) {
-            return "Preporuka: Ukljucite grejanje.";
+            return "Ukljucite grejanje.";
         } else {
             return "Ugasite klimu/grejanje";
         }
@@ -95,6 +96,10 @@ public List<HourlyRecommendationDto> getHourlyRecommendations(Principal principa
         LocalTime t = LocalTime.parse(time);
         return t.plusHours(hoursToAdd).toString();
     }
+
+
+
+
 
 }
 

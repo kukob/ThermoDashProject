@@ -72,7 +72,79 @@ public class UsageStatsService {
                 .collect(Collectors.toList());
     }
 
-   
+    public List<DailyConsumptionDto> getAllUsersDailyConsumption() {
+        List<UsageDatum> data = usageDatumRepository.findAll();
+
+        Map<String, Map<LocalDate, Integer>> grouped = new HashMap<>();
+
+        for (UsageDatum d : data) {
+            String username = d.getUserEntity().getUsername();
+            LocalDate date = d.getDate();
+            int kwh = d.getEnergyConsumedKwh() != null ? d.getEnergyConsumedKwh() : 0;
+
+            grouped
+                    .computeIfAbsent(username, u -> new TreeMap<>())
+                    .merge(date, kwh, Integer::sum);
+        }
+
+        List<DailyConsumptionDto> result = new ArrayList<>();
+        for (Map.Entry<String, Map<LocalDate, Integer>> userEntry : grouped.entrySet()) {
+            String username = userEntry.getKey();
+            for (Map.Entry<LocalDate, Integer> dateEntry : userEntry.getValue().entrySet()) {
+                result.add(new DailyConsumptionDto(
+                        dateEntry.getKey().toString(),
+                        dateEntry.getValue()
+                ));
+            }
+        }
+
+        return result;
+    }
+
+    public Map<String, Integer> getAverageStatsForAllUsers() {
+        List<UsageDatum> allData = usageDatumRepository.findAll();
+
+        LocalDate today = LocalDate.now();
+        LocalDate weekAgo = today.minusDays(7);
+        LocalDate monthAgo = today.minusMonths(1);
+        LocalDate yearAgo = today.minusYears(1);
+
+        Map<UserEntity, List<UsageDatum>> groupedByUser = allData.stream()
+                .collect(Collectors.groupingBy(UsageDatum::getUserEntity));
+
+        int userCount = groupedByUser.size();
+
+        int totalWeekAllUsers = groupedByUser.values().stream()
+                .mapToInt(userData -> userData.stream()
+                        .filter(d -> !d.getDate().isBefore(weekAgo))
+                        .mapToInt(UsageDatum::getEnergyConsumedKwh)
+                        .sum())
+                .sum();
+
+        int totalMonthAllUsers = groupedByUser.values().stream()
+                .mapToInt(userData -> userData.stream()
+                        .filter(d -> !d.getDate().isBefore(monthAgo))
+                        .mapToInt(UsageDatum::getEnergyConsumedKwh)
+                        .sum())
+                .sum();
+
+        int totalYearAllUsers = groupedByUser.values().stream()
+                .mapToInt(userData -> userData.stream()
+                        .filter(d -> !d.getDate().isBefore(yearAgo))
+                        .mapToInt(UsageDatum::getEnergyConsumedKwh)
+                        .sum())
+                .sum();
+
+        int avgWeek = userCount > 0 ? totalWeekAllUsers / userCount : 0;
+        int avgMonth = userCount > 0 ? totalMonthAllUsers / userCount : 0;
+        int avgYear = userCount > 0 ? totalYearAllUsers / userCount : 0;
+
+        return Map.of(
+                "weekly", avgWeek,
+                "monthly", avgMonth,
+                "yearly", avgYear
+        );
+    }
 
 //
 //    public Map<String, Integer> getMonthlyConsumption(String username) {
